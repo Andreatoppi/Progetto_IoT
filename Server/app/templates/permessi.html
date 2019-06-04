@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Permessi</title>
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Gestione degli utenti</h1>
+      </div>
+      <div id="main">
+        {% if not handlers %}
+            <h3>Nessun utente registrato</h3>
+        {% else %}
+            <h3>Lista degli utenti registrati</h3>
+            
+            <table>
+                    <colgroup id="a" span="3"></colgroup>
+                    <thead>
+                        <tr><th>Codice</th><th>Nome</th><th>Cognome</th><th>Autorizzazione</th><th>Azione</th></tr>
+                    </thead>
+
+                    <tbody>
+            {% for codice, nome, cognome, autorizzazione in handlers %}
+            <form action="./permessi/{{codice}}" method="POST">
+
+                        <tr><td>{{codice}}</td><td>{{nome}}</td>
+                        <td>{{cognome}}</td><td>{{autorizzazione}}</td>
+                        <td><input type="submit" value='Cambia permesso'></td></tr>
+            </form>
+            {% endfor %}
+                    </tbody>
+            </table>
+            
+        {% endif %}
+      </div>
+    </div>
+    <br>
+    <a href="/">Home</href>
+  </body>
+</html>

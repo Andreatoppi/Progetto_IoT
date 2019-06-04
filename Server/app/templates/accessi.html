@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Accessi</title>
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Accessi registrati</h1>
+      </div>
+      <div id="main">
+        {% if not handlers %}
+            <h3>Nessun utente registrato</h3>
+        {% else %}
+            <h3>Lista dei tentativi di accesso</h3>
+            
+            <table>
+                    <colgroup id="a" span="3"></colgroup>
+                    <thead>
+                        <tr><th>Codice</th><th>Nome</th><th>Cognome</th><th>Autorizzazione</th><th>Fascia ora</th><th>Data e ora</th><th>Anomalia</th></tr>
+                    </thead>
+
+                    <tbody>
+            {% for codice, nome, cognome, autorizzazione,fascia, datatime, anomaly in handlers %}
+                        <tr><td>{{codice}}</td><td>{{nome}}</td>
+                        <td>{{cognome}}</td><td>{{autorizzazione}}</td>
+                        <td>{{fascia}}</td><td>{{datatime}}</td>
+                        <td>{{anomaly}}</td>
+            {% endfor %}
+                    </tbody>
+            </table>
+            
+        {% endif %}
+      </div>
+    </div>
+    <br>
+    <a href="/">Home</href>
+  </body>
+</html>

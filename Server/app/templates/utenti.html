@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>Utenti</title>
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Utenti registrati</h1>
+      </div>
+      <div id="main">
+        {% if not handlers %}
+            <h3>Nessun utente registrato</h3>
+        {% else %}
+            <h3>Lista degli utenti registrati</h3>
+            
+            <table>
+                    <colgroup id="a" span="3"></colgroup>
+                    <thead>
+                        <tr><th>Codice</th><th>Nome</th><th>Cognome</th><th>Autorizzazione</th></tr>
+                    </thead>
+
+                    <tbody>
+            {% for codice, nome, cognome, autorizzazione in handlers %}
+                        <tr><td>{{codice}}</td><td>{{nome}}</td>
+                        <td>{{cognome}}</td><td>{{autorizzazione}}</td>
+            {% endfor %}
+                    </tbody>
+            </table>
+            
+        {% endif %}
+      </div>
+    </div>
+    <br>
+    <a href="/">Home</href>
+  </body>
+</html>

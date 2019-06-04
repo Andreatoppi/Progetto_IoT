@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Registra</title>
+</head>
+<body>
+<form action="./inserisci" method="POST">
+    <table>
+            <colgroup id="a" span="3"></colgroup>
+            <thead>
+                    <tr><th>Codice</th><th>Nome</th><th>Cognome</th><th>Autorizzazione</th><th>Azione</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>{{ form.codice(size=20) }}</td>
+                    <td>{{ form.nome(size=20) }}</td>
+                    <td>{{ form.cognome(size=20) }}</td>
+                    <td>{{ form.autorizzazione() }}</td>
+                    <td><input type="submit"></td>
+                </tr>
+                </tbody>
+        </table>
+</form>
+
+</body>
+</html>
