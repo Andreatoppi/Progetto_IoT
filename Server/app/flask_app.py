@@ -16,7 +16,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 api = Api(app)
 app.config['SECRET_KEY'] = 'ciao'
-    
+
+#gestione e validazione delle form
 class MyForm(FlaskForm):
     codice = StringField('codice', [validators.DataRequired()])
     nome = StringField('nome', validators=[DataRequired()])
@@ -36,7 +37,6 @@ def inserisci():
         codice = request.form['codice']
         nome = request.form['nome']
         cognome = request.form['cognome']
-        # autorizzazione = request.form['autorizzazione']
     return render_template('inserimento.html', form=form)
 
 @app.route('/inserisci', methods=['POST'])
@@ -45,7 +45,7 @@ def post():
     nome = request.form['nome']
     cognome = request.form['cognome']
     autorizzazione = request.form['autorizzazione']
-    utente = Utenti.get_by_id(codice)  #mi restituisce l'oggetto Color con quel name
+    utente = Utenti.get_by_id(codice)
     if utente:
         return ('Codice utente gia esistente')
     utente = Utenti(id=codice,
@@ -53,7 +53,7 @@ def post():
                     nome=nome,
                     cognome=cognome,
                     autorizzazione=autorizzazione)
-    utente.put() #l'oggetto si sovrarscive se ora esiste, prima ogni volta generava un id diverso e lo aggiungeva nuovamente
+    utente.put()
     return redirect(url_for('home'))
 
 @app.route('/visualizza', methods=['GET'])
@@ -148,5 +148,5 @@ def cambiaPermesso(codice):
                         nome=utente.nome,
                         cognome=utente.cognome,
                         autorizzazione='True')
-    utente.put() #l'oggetto si sovrarscive se ora esiste, prima ogni volta generava un id diverso e lo aggiungeva nuovamente
+    utente.put()
     return redirect(url_for('cambiaPermessi'))

@@ -8,6 +8,7 @@ import time
 import numpy as np
 import statistics, os
 from flask import Flask, jsonify, abort, request, make_response, url_for, redirect
+from datetime import timedelta  
 
 parser = reqparse.RequestParser()
 parser.add_argument('codice', type=str, required=True, location='json')
@@ -15,24 +16,21 @@ parser.add_argument('nome', type=str, required=True, location='json')
 parser.add_argument('cognome', type=str, required=True, location='json')
 parser.add_argument('autorizzazione', type=str, location='json')
 
+#Api che permette ad un controllore di richiedere le credenziali dell'ultimo accesso
+class GetUltimoApi(Resource):
+    def get(self):
+        accessi = Accessi.query().order(-Accessi.timestamp).fetch(1)
+        return {'codice': accessi[0].codice,
+                'nome' : accessi[0].nome,
+                'cognome': accessi[0].cognome,
+                'autorizzazione': accessi[0].autorizzazione,
+                'timestamp' : str(accessi[0].timestamp),
+                'fascia_orario': accessi[0].datatemp
+        }
 
-class UtenteGetApi(Resource):
-    def get(self, codice):
-        utenti = Utenti.query(Utenti.codice==codice).fetch(1)
-        if not utenti:
-            return {'message': 'The resource does not exist.'}, 404
-        utente = utenti[0]
-        return {'message': 'Resource retrieved correctly.',
-                'data': {
-                        'codice': utente.codice,
-                        'nome': utente.nome,
-                        'cognome': utente.cognome,
-                        'autorizzazione': utente.autorizzazione
-                        }
-                }
+api.add_resource(GetUltimoApi, '/api/v0.1/ultimo')
 
-api.add_resource(UtenteGetApi, '/api/v0.1/utente/<string:codice>')
-
+#Api utilizzata per ricevere in input i dati rilevati dal sensore e restituire l'esito
 class AccessoApi(Resource):
     def post(self,codice):
         # if not request.json or 'codice' not in request.json:
@@ -75,8 +73,8 @@ api.add_resource(AccessoApi, '/api/v0.1/accesso/<string:codice>')
 
 def registra_acceso(utente, media, varianza):
     ts = time.time()
-    st = datetime.datetime.fromtimestamp(time.time())
-    fascia_orario = int(datetime.datetime.fromtimestamp(ts).strftime('%H'))
+    st = datetime.datetime.fromtimestamp(time.time())+timedelta(minutes=120)
+    fascia_orario = int(datetime.datetime.fromtimestamp(ts).strftime('%H'))+2
 
     anomalia, prob = verificaAnomalia(fascia_orario, media, varianza)
 
@@ -90,10 +88,9 @@ def registra_acceso(utente, media, varianza):
     accesso.put()
     return prob
 
-#variabili per la gaussiana
+#soglia di anomalia
 soglia = 0.2
 
-#definisco la gaussiana
 def gaussian(x, mu, sig):
     if sig == 0:
         return 1
@@ -116,7 +113,6 @@ def training():
     return  mean_access, sig_access
 
 def verificaAnomalia(fascia_orario, media, dev):
-    #verifica se c'è anomalia
 
     prob = gaussian(fascia_orario, media, dev)
 
