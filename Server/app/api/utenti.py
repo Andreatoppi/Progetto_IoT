@@ -32,12 +32,12 @@ api.add_resource(GetUltimoApi, '/api/v0.1/ultimo')
 
 #Api utilizzata per ricevere in input i dati rilevati dal sensore e restituire l'esito
 class AccessoApi(Resource):
-    def post(self,codice):
-        # if not request.json or 'codice' not in request.json:
-        #     abort(400)
+    def post(self):
+        if not request.json or 'codice' not in request.json:
+            abort(400)
 
-        # #prendo il numero della tessera
-        # codice = request.json['codice']
+        #prendo il numero della tessera
+        codice = request.json['codice']
 
         utenti = Utenti.query(Utenti.codice==codice).fetch(1)
         if not utenti:
@@ -69,7 +69,7 @@ class AccessoApi(Resource):
                 'prob' : prob
                 }
 
-api.add_resource(AccessoApi, '/api/v0.1/accesso/<string:codice>')
+api.add_resource(AccessoApi, '/api/v0.1/accesso')
 
 def registra_acceso(utente, media, varianza):
     ts = time.time()
@@ -89,7 +89,7 @@ def registra_acceso(utente, media, varianza):
     return prob
 
 #soglia di anomalia
-soglia = 0.2
+soglia = 0.4
 
 def gaussian(x, mu, sig):
     if sig == 0:
